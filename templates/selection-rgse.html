@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'votes_nominaux_geneve/style.css' %}" />
+    <!-- <link rel="stylesheet" href="{{ STATIC_URL }}'votes_nominaux_geneve/style.css'" /> -->
 
 </head>
+
 <body>
     <!-- Nav bar -->
-    <nav>   
+    <nav>
         <div>
-        <h1>Nav bar</h1>
+            <h1>Nav bar</h1>
 
         </div>
     </nav>
 
     <!-- Main content -->
-    <div class = "border mt-2 p-6">
-        <div class="border bg-green-600 rounded mt-2 p-4 text-center hover:bg-green-400"> <!--  All chapters -->
-            <div class="group">
-                <h2 class="text-3xl text-white"> Title 1</h2>
+    <div class="border mt-2 p-6">
+        <!--  Block for all rubriques -->
+        <div class="border rounded mt-2 p-4 bg-blue-600 text-left">
+            {% for rubrique, chapters in rsge_dict.items %}
+            <!-- Block for a single rubriques (including all chapters) -->
+            <div class="border rounded mt-2 p-4 bg-pink-600 group">
+                <!-- Block for rubrique title-->
+                <div class="border rounded mt-2 p-4 bg-yellow-200">
+                    <h2 class="text-3xl text-white"> {{rubrique}}</h2>
+                </div>
+                <!-- end Block for rubrique title-->
+
+                <!-- Block for all chapters -->
+                <div>
+                    {% for chapter in chapters %}
+
+                    <!-- Block for signle chapter-->
                     <a href="https://www.google.com">
-
-                <div class ="hidden border rounded p-1 mt-2 group-hover:block hover:bg-blue-600">
-Chapter 1
-                </div>
-                    </a>
-                <div class ="hidden border rounded p-1 mt-2 group-hover:block">
-                    <button>
-Chapter 1
-                    </button>
-                </div>
+                        <div class="border rounded mt-2 p-4 bg-red-600 hidden group-hover:block hover:bg-blue-600">
+                            {{chapter}}
                         </div>
-        </div>
+                    </a>
+                    <!-- end Block for single chapter-->
+                    {% endfor %}
+                </div>
+                <!-- end Block for all chapters -->
 
-        <div class="border bg-green-400 rounded mt-2 p-4 text-center hover:bg-blue-600"> <!--  All chapters -->
-            <div>
-                <h2 class="text-3xl text-white"> Title 1</h2>
+
+
             </div>
+            <!-- end Block for a single rubrique (including all chapters) -->
+            {% endfor %}
         </div>
+        <!--  end Block for all rubriques -->
 
-        <div class="border bg-green-400 rounded mt-2 p-4 text-center hover:bg-blue-600"> <!--  All chapters -->
-            <div>
-                <h2 class="text-3xl text-white"> Title 1</h2>
-            </div>
-        </div>
 
-    </div>
-    
 </body>
+
 </html>

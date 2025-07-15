@@ -30,11 +30,11 @@ def clean_rsge(rsge_file: str) -> pd.DataFrame:
     reformatted_rsge = reformatted_rsge.loc[~pd.isna(
         reformatted_rsge["Référence"])]
     reformatted_rsge = reformatted_rsge.reset_index().drop(
-        columns=["index", "Date d’adoption"])
+        columns=["index"])
     reformatted_rsge["Rubrique"] = reformatted_rsge['Référence'].str[0]
     reformatted_rsge["Chapitre"] = reformatted_rsge['Référence'].str[:3]
-    reformatted_rsge = reformatted_rsge.merge(chapitres_rsge, on="Chapitre", how="left").merge(
-        rubriques_rsge, on="Rubrique", how="left")
+    reformatted_rsge = reformatted_rsge.merge(
+        rubriques_rsge, on="Rubrique", how="left").merge(chapitres_rsge, on="Chapitre", how="left")
     reformatted_rsge["acronym"] = reformatted_rsge["Intitulé"].apply(extract_last_parentheses)
 
     column_names_dict = {'Référence':'reference',
@@ -42,7 +42,8 @@ def clean_rsge(rsge_file: str) -> pd.DataFrame:
                          'Rubrique':'rubrique', 
                          'Chapitre':'chapitre', 
                          'Intitulé chapitre':'intitule_chapitre',
-                         'Intitulé rubrique':'intitule_rubrique'
+                         'Intitulé rubrique':'intitule_rubrique',
+                         "Date d’adoption":"date_d_adoption"
                          }
     
     reformatted_rsge.rename(columns=column_names_dict, inplace=True)
