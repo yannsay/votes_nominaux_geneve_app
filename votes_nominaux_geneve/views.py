@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from .models import RSGEChapter
 from django_pandas.io import read_frame
 
@@ -18,4 +18,11 @@ def selection_rgse(request):
     return render(request, "selection-rgse.html", {'rsge_dict':rsge_dict})
 
 def create_votes_table(request):
+    if request.method == "GET":
+        # Retrieve parameters from the request
+        param1 = request.GET.get('param1')
+        param2 = request.GET.get('param2')
+
+        # Logic to handle the parameters
+        return HttpResponse(f'Received params: param1={param1}, param2={param2}')
     return render(request, "table-votes.html")

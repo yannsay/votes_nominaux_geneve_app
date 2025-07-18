@@ -8,7 +8,7 @@ def extract_last_parentheses(text):
     matches = re.findall(r'\(([^)]+)\)', text)
     return matches[-1] if matches else text
 
-def clean_rsge(rsge_file: str) -> pd.DataFrame:
+def create_clean_rsge_data(rsge_file: str) -> pd.DataFrame:
     """
     Import the Rubriques Systématique Genève rubriques and chapters and clean them.
     """
@@ -53,11 +53,3 @@ def clean_rsge(rsge_file: str) -> pd.DataFrame:
 
     return reformatted_rsge
 
-if __name__ == '__main__':
-    from sqlalchemy import create_engine
-
-    clean_rsge = clean_rsge("etl_votes_nominaux_geneve/inputs/rsGE.csv")
-
-    engine = create_engine('sqlite:///db.sqlite3')
-
-    clean_rsge.to_sql("RSGEChapter", if_exists='replace', con=engine)

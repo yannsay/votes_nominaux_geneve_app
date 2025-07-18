@@ -30,7 +30,9 @@
             <div class="border rounded mt-2 p-4 bg-pink-600 group">
                 <!-- Block for rubrique title-->
                 <div class="border rounded mt-2 p-4 bg-yellow-200">
-                    <h2 class="text-3xl text-white"> {{rubrique}}</h2>
+                    <a href="table-votes?param1={{rubrique}}">
+                        <h2 class="text-3xl text-white"> {{rubrique}}</h2>
+                    </a>
                 </div>
                 <!-- end Block for rubrique title-->
 
@@ -39,7 +41,7 @@
                     {% for chapter in chapters %}
 
                     <!-- Block for signle chapter-->
-                    <a href="https://www.google.com">
+                    <a href="table-votes?param1={{rubrique}}&param2={{chapter}}">
                         <div class="border rounded mt-2 p-4 bg-red-600 hidden group-hover:block hover:bg-blue-600">
                             {{chapter}}
                         </div>

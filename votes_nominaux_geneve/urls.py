@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('selection-rgse', views.selection_rgse, name = 'selection-rgse')
+    path('selection-rgse', views.selection_rgse, name = 'selection-rgse'),
+    path('table-votes', views.create_votes_table, name = 'table-votes')
 ]
