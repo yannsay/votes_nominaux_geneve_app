@@ -3,7 +3,7 @@ import pandas as pd
 
 def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.DataFrame:
         """
-        Setter for the voting tables. It will set 2 tables:
+        Cleaner for the voting tables. It will create 2 tables:
         - one with votings with RSGE: clean_rsge_voting
         - one with votings without RSGE: voting_oth_clean
         Clean the voting table and add the information from RSGE
