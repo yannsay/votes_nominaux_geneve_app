@@ -37,6 +37,8 @@ class RSGEVotingsData(models.Model):
     intitule_rubrique = models.CharField() 
     intitule_chapitre = models.CharField() 
     acronym = models.CharField() 
+    debat_numero = models.SmallIntegerField()
+
     class Meta:
         managed=False
         db_table='data_votings_rsge'

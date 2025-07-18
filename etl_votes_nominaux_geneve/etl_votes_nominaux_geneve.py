@@ -13,13 +13,20 @@ print("""
     #### writing RSGE to database done. table is data_taxonomie_rsge
     """)
 print(clean_rsge.columns)
+
 clean_votings = create_clean_votings_data( votings_file = "etl_votes_nominaux_geneve/inputs/voting_body.csv",
                                           rsge_data =  clean_rsge)
+
+if clean_votings["clean_rsge_voting"][clean_votings["clean_rsge_voting"].debat_numero == 999].shape[0] != 0:
+    print("### missing debate number in data_votings_rsge")
+    
 clean_votings["clean_rsge_voting"].to_sql("data_votings_rsge", if_exists="replace", con=engine)
+
 print("""
     #### writing RSGEVotings to database done. table is data_votings_rsge
     """)
 print(clean_votings["clean_rsge_voting"].columns)
+
 clean_votings["clean_oth_voting"].to_sql("data_votings_others", if_exists="replace", con=engine)
 print("""
     #### writing otherVotings to database done. table is data_votings_others

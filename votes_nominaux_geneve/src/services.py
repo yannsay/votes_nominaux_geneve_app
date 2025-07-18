@@ -2,7 +2,8 @@ import pandas as pd
 
 def filter_rsge_voting(voting_table: pd.DataFrame,
                        selected_rubriques: list[str],
-                       selected_chapitre: list[str]) -> pd.DataFrame:
+                       selected_chapitre: list[str],
+                       last_debate: bool = True) -> pd.DataFrame:
     """
     Function to filter the voting table
     """
@@ -14,6 +15,19 @@ def filter_rsge_voting(voting_table: pd.DataFrame,
     if selected_chapitre != []:
         filtered_df = filtered_df[filtered_df["intitule_chapitre"].isin(
             selected_chapitre)]
+        
+    if last_debate:
+        max_debates = filtered_df.groupby('voting_affair_number')['debat_numero'].max().reset_index()
+        max_debates.columns = ['voting_affair_number', 'max_debat_numero']
+        filtered_df = filtered_df.merge(
+            max_debates, 
+            left_on=['voting_affair_number', 'debat_numero'], 
+            right_on=['voting_affair_number', 'max_debat_numero'],
+            how='inner'
+        )
+
+        # Drop the helper column
+        filtered_df = filtered_df.drop('max_debat_numero', axis=1)
 
     return filtered_df
 

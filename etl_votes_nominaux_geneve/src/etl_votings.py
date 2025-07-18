@@ -1,5 +1,5 @@
 import pandas as pd
-# import datetime
+import re
 
 def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.DataFrame:
         """
@@ -40,15 +40,18 @@ def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.
             vote_dict, how="left", on="type_vote")
         clean_voting = clean_voting.drop(columns="type_vote")
 
+        # Add the numero_debate
+        clean_voting['debat_numero'] = clean_voting["voting_title_fr"].apply(get_debate_number)
+
         # Clean dates for filter in streamlit
         clean_voting["voting_date"] = pd.to_datetime(
             clean_voting["voting_date"])
 
-        # Filter keep text without a Référence from RSGE
+        # Filter text without a Référence from RSGE
         oth_voting = clean_voting.loc[pd.isna(
             clean_voting['reference']),].reset_index()
 
-        # Filter out text without a Référence from RSGE
+        # Filter text with a Référence from RSGE
         clean_voting = clean_voting.loc[~pd.isna(
             clean_voting['reference']),].reset_index()
 
@@ -81,131 +84,243 @@ def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.
         return {"clean_rsge_voting":clean_voting,
                 "clean_oth_voting":clean_oth_voting}
 
-# VOTING_CSV = ('inputs/voting_body.csv')
-# VOTES_CSV = ('inputs/votes.csv')
-# RSGE_CSV = ("inputs/rsGE.csv")
-# PERSON_CSV = ('inputs/persons.csv')
-
-# def load_data(csv_path):
-#     if csv_path == "inputs/rsGE.csv":
-#         data = pd.read_csv(csv_path, sep=";")
-#     else:
-#         data = pd.read_csv(csv_path)
-#     return data
 
 
-# class AppDatabase:
-#     def __init__(self) -> None:
-#         self.set_clean_rsge(RSGE_CSV)
-#         self.set_clean_votings(VOTING_CSV, rsge_data=self.clean_rsge)
-#         self.set_clean_votes(VOTES_CSV)
-#         self.set_clean_persons(PERSON_CSV, votes_data=self.clean_votes)
+def get_debate_number(title):
+    """
+    Extract debate number from titles.
+    """
+    if pd.isna(title):
+        return 999
+    
+    # Convert to lowercase and strip whitespace
+    title_clean = str(title).lower().strip()
+    
+    # Pattern to match ": [1er|2e|3e] débat" at the end of string
+    pattern = r'(?::\s*)?(1er|2e|3e)\s+débat\s*'
+    
+    match = re.search(pattern, title_clean)
+    if match:
+        debate_text = match.group(1)
+        # Extract the number from "1er", "2e", "3e"
+        if debate_text == "1er":
+            return 1
+        elif debate_text == "2e":
+            return 2
+        elif debate_text == "3e":
+            return 3
+    
+    return 999
 
-#         self.set_rubriques_rsge(clean_rsge=self.clean_rsge)
-#         self.set_clean_persons_x(clean_persons=self.clean_persons)
-#         self.set_min_max_dates(clean_votings=self.clean_rsge_voting)
-#         self.set_type_votes(clean_oth_voting=self.clean_oth_voting)
+# def test_get_debate_number():
+#     """
+#     Comprehensive test suite for the get_debate_number function
+#     """
+    
+#     # Test data covering various cases
+#     test_cases = [
+#         # Standard cases
+#         ("PL 13407-A, vote nominal : 3e débat", 3),
+#         ("PL 13250, vote nominal : 1er débat", 1),
+#         ("PL 12541-A, vote nominal : 2e débat", 2),
+        
+#         # Case sensitivity tests
+#         ("PL 12575-B, vote nominal : 3E DÉBAT", 3),
+#         ("PL 12574-B, vote nominal : 1ER Débat", 1),
+#         ("PL 12888-A, vote nominal : 2E débat", 2),
+        
+#         # Whitespace handling
+#         ("PL 12310-A, vote nominal : 1er débat  ", 1),  # trailing spaces
+#         ("  PL 13175-A, vote nominal : 3e débat", 3),   # leading spaces
+#         ("PL 13253, vote nominal :   2e   débat   ", 2), # multiple spaces
+        
+#         # Edge cases that should return 999
+#         ("PL 13293, vote nominal : 4e débat", 999),      # invalid number
+#         ("PL 13293, vote nominal : 1er débat sur", 999), # doesn't end with débat
+#         ("PL 13293, vote nominal débat 2e", 999),        # wrong format
+#         ("PL 13293, vote nominal : débat", 999),         # missing number
+#         ("PL 13293, vote nominal", 999),                 # no débat at all
+#         ("", 999),                                       # empty string
+#         ("PL 13293, vote nominal : 1er debate", 999),    # wrong language
+#         ("PL 13293, vote nominal : premier débat", 999), # wrong format
+#     ]
+    
+#     # Test each case
+#     for title, expected in test_cases:
+#         result = get_debate_number(title)
+#         assert result == expected, f"Failed for '{title}': expected {expected}, got {result}"
+    
+#     print("✅ All standard tests passed!")
 
- 
+# def test_null_values():
+#     """
+#     Test handling of null/NaN values
+#     """
+#     test_cases = [
+#         (None, 999),
+#         (pd.NA, 999),
+#         (pd.NaT, 999),
+#         (float('nan'), 999),
+#     ]
+    
+#     for value, expected in test_cases:
+#         result = get_debate_number(value)
+#         assert result == expected, f"Failed for null value {value}: expected {expected}, got {result}"
+    
+#     print("✅ Null value tests passed!")
 
-#     def set_clean_votes(self, votes_file: str) -> None:
-#         """
-#         Setter the votes table
-#         """
-#         votes_raw = load_data(votes_file)
+# def test_numeric_inputs():
+#     """
+#     Test behavior with numeric inputs (should be converted to string)
+#     """
+#     test_cases = [
+#         (123, 999),  # Number without the pattern
+#         (0, 999),    # Zero
+#         (-1, 999),   # Negative number
+#     ]
+    
+#     for value, expected in test_cases:
+#         result = get_debate_number(value)
+#         assert result == expected, f"Failed for numeric input {value}: expected {expected}, got {result}"
+    
+#     print("✅ Numeric input tests passed!")
 
-#         # Translates votes
-#         vote_dict = pd.DataFrame({"vote_vote": ["yes", "no", "abstention"],
-#                                   "vote_label": ["Oui", "Non", "Abstention"]})
-#         clean_votes = votes_raw.merge(vote_dict, how="left", on="vote_vote")
+# def test_special_characters():
+#     """
+#     Test with special characters and unicode
+#     """
+#     test_cases = [
+#         ("PL 13407-A, vote nominal : 3e débat", 3),      # Normal case
+#         ("PL 13407-A, vote nominal : 3e débat!", 999),   # Exclamation at end
+#         ("PL 13407-A, vote nominal : 3e débat?", 999),   # Question mark at end
+#         ("PL 13407-A, vote nominal : 3e débat.", 999),   # Period at end
+#         ("PL 13407-A, vote nominal : 3e débat\n", 999),  # Newline at end
+#         ("PL 13407-A, vote nominal : 3e débat\t", 999),  # Tab at end
+#     ]
+    
+#     for title, expected in test_cases:
+#         result = get_debate_number(title)
+#         assert result == expected, f"Failed for special char test '{title}': expected {expected}, got {result}"
+    
+#     print("✅ Special character tests passed!")
 
-#         clean_votes = clean_votes.drop(columns=[
-#                                        "vote_body_key", "vote_created_local", "vote_vote_display_de", "vote_vote_display_it", "vote_vote"])
+# def test_regex_pattern_edge_cases():
+#     """
+#     Test edge cases for the regex pattern
+#     """
+#     test_cases = [
+#         # Valid patterns
+#         ("Something : 1er débat", 1),
+#         ("Something: 2e débat", 2),
+#         ("Something :3e débat", 3),
+#         ("Something :   1er   débat   ", 1),
+        
+#         # Invalid patterns
+#         ("Something : 1er  débats", 999),    # plural
+#         ("Something : 1erdébat", 999),       # no space
+#         ("Something : 1er débat extra", 999), # extra text
+#         ("Something 1er débat", 999),        # no colon
+#         ("Something : 1 débat", 999),        # just number
+#         ("Something : 1ere débat", 999),     # wrong form
+#         ("Something : 1st débat", 999),      # English ordinal
+#     ]
+    
+#     for title, expected in test_cases:
+#         result = get_debate_number(title)
+#         assert result == expected, f"Failed for regex edge case '{title}': expected {expected}, got {result}"
+    
+#     print("✅ Regex pattern edge case tests passed!")
 
-#         self.clean_votes = clean_votes
+# def test_performance_with_long_strings():
+#     """
+#     Test performance with very long strings
+#     """
+#     # Create a very long string
+#     long_prefix = "A" * 1000
+#     test_cases = [
+#         (f"{long_prefix} : 1er débat", 1),
+#         (f"{long_prefix} : 2e débat", 2),
+#         (f"{long_prefix} : 3e débat", 3),
+#         (f"{long_prefix} : invalid", 999),
+#     ]
+    
+#     for title, expected in test_cases:
+#         result = get_debate_number(title)
+#         assert result == expected, f"Failed for long string test: expected {expected}, got {result}"
+    
+#     print("✅ Long string performance tests passed!")
 
-#     def set_clean_persons(self, persons_file: str, votes_data) -> None:
-#         """
-#         Setter for clean persons data
-#         """
-#         persons_raw = load_data(persons_file)
+# def test_all_debate_types():
+#     """
+#     Test all three debate types specifically
+#     """
+#     test_cases = [
+#         ("Test : 1er débat", 1),
+#         ("Test : 2e débat", 2),
+#         ("Test : 3e débat", 3),
+#     ]
+    
+#     results = []
+#     for title, expected in test_cases:
+#         result = get_debate_number(title)
+#         results.append(result)
+#         assert result == expected, f"Failed for debate type test '{title}': expected {expected}, got {result}"
+    
+#     # Check that we got all three types
+#     assert set(results) == {1, 2, 3}, f"Expected all three debate types, got {set(results)}"
+    
+#     print("✅ All debate type tests passed!")
 
-#         columns_to_keep = ["person_external_id", "person_fullname", "person_firstname", "person_lastname",
-#                            "person_party_fr", "person_website_parliament_url_fr", "person_image_url",
-#                            "person_birthday", "person_occupation_fr", "person_gender",
-#                            "person_function_latest_fr"]
-#         clean_persons = persons_raw[columns_to_keep]
+# def test_batch_processing():
+#     """
+#     Test with a batch of titles (like original data)
+#     """
+#     titles = [
+#         "PL 13407-A, vote nominal : 3e débat",
+#         " PL 13250, vote nominal : 1er débat",
+#         "PL 12541-A, vote nominal : 1er débat",
+#         "PL 12575-B, vote nominal : 3e débat",
+#         "PL 12574-B, vote nominal : 3e débat  ",      
+#         "PL 12888-A, vote nominal : 3e débat",
+#         "PL 12310-A, vote nominal : 1er débat",
+#         "PL 13175-A, vote nominal : 3e débat",
+#         "PL 13253, vote nominal : 3e débat",
+#         "PL 13293, vote nominal : 3e débat",
+#     ]
+    
+#     expected_results = [3, 1, 1, 3, 3, 3, 1, 3, 3, 3]
+    
+#     results = [get_debate_number(title) for title in titles]
+    
+#     assert results == expected_results, f"Batch processing failed: expected {expected_results}, got {results}"
+    
+#     # Check distribution
+#     from collections import Counter
+#     counts = Counter(results)
+#     expected_counts = Counter(expected_results)
+    
+#     assert counts == expected_counts, f"Result distribution mismatch: expected {expected_counts}, got {counts}"
+    
+#     print("✅ Batch processing tests passed!")
 
-#         # Filter the persons that votes are in the period
-#         clean_persons = clean_persons[clean_persons["person_external_id"].isin(
-#             votes_data["vote_person_external_id"])]
+# def run_all_tests():
+#     """
+#     Run all tests
+#     """
+#     print("Running comprehensive tests for get_debate_number function...")
+#     print("=" * 60)
+    
+#     test_get_debate_number()
+#     test_null_values()
+#     test_numeric_inputs()
+#     test_special_characters()
+#     test_regex_pattern_edge_cases()
+#     test_performance_with_long_strings()
+#     test_all_debate_types()
+#     test_batch_processing()
+    
+#     print("=" * 60)
+#     print("🎉 All tests passed! The function is working correctly.")
 
-#         self.clean_persons = clean_persons
-
-#     def set_clean_rsge(self, rsge_file: str) -> None:
-#         """
-#         Setter for RSGE.
-#         Import the Rubriques Systématique Genève rubriques and chapters and clean them.
-#         """
-#         rsge = load_data(rsge_file)
-#         rubriques_mask = rsge["Référence"].str.len() == 1
-#         rubriques_rsge = rsge.loc[rubriques_mask]
-#         rubriques_rsge = rubriques_rsge.reset_index().drop(
-#             columns=["index", "Date d’adoption"])
-#         rubriques_rsge.columns = ["Rubrique", "Intitulé rubrique"]
-
-#         chapitres_mask = (rsge["Référence"].str.len() > 1) & (
-#             rsge["Référence"].str.len() <= 4)
-#         chapitres_rsge = rsge.loc[chapitres_mask]
-#         chapitres_rsge = chapitres_rsge.reset_index().drop(
-#             columns=["index", "Date d’adoption"])
-#         chapitres_rsge.columns = ["Chapitre", "Intitulé chapitre"]
-
-#         reformatted_rsge = rsge.loc[~(chapitres_mask | rubriques_mask)]
-#         reformatted_rsge = reformatted_rsge.loc[~pd.isna(
-#             reformatted_rsge["Référence"])]
-#         reformatted_rsge = reformatted_rsge.reset_index().drop(
-#             columns=["index", "Date d’adoption"])
-#         reformatted_rsge["Rubrique"] = reformatted_rsge['Référence'].str[0]
-#         reformatted_rsge["Chapitre"] = reformatted_rsge['Référence'].str[:3]
-#         reformatted_rsge = reformatted_rsge.merge(chapitres_rsge, on="Chapitre", how="left").merge(
-#             rubriques_rsge, on="Rubrique", how="left")
-#         self.clean_rsge = reformatted_rsge
-
-#     def set_rubriques_rsge(self, clean_rsge: pd.DataFrame) -> None:
-#         """
-#         Create list for selector in streamlit.
-#         """
-#         rubriques_rsge = clean_rsge[["Rubrique", "Intitulé rubrique"]].drop_duplicates(
-#             ["Rubrique", "Intitulé rubrique"]).sort_values(by=["Rubrique"])
-#         self.rubriques_rsge = rubriques_rsge["Intitulé rubrique"].to_list()
-
-#     def set_clean_persons_x(self, clean_persons: pd.DataFrame) -> None:
-#         self.clean_persons_parties = clean_persons.drop_duplicates(
-#             ["person_party_fr"])["person_party_fr"].sort_values().to_list()
-#         self.clean_persons_genres = clean_persons.drop_duplicates(
-#             ["person_gender"])["person_gender"].sort_values().to_list()
-#         self.clean_persons_persons = clean_persons.drop_duplicates(
-#             ["person_fullname"])["person_fullname"].sort_values().to_list()
-
-#     def set_min_max_dates(self, clean_votings: pd.DataFrame) -> None:
-#         self.min_date = clean_votings["voting_date"].min()
-#         self.max_date = clean_votings["voting_date"].max(
-#         ) + datetime.timedelta(days=1)
-
-#     def set_type_votes(self, clean_oth_voting: pd.DataFrame) -> None:
-#         """
-#         Create list for selector in streamlit.
-#         """
-#         type_votes = clean_oth_voting[["type_vote_label"]].drop_duplicates(
-#             ["type_vote_label"]).sort_values(by=["type_vote_label"])
-#         self.type_votes = type_votes["type_vote_label"].to_list()
-
-
-# if __name__ == '__main__':
-#     # Write csv for tests
-#     app_database = AppDatabase()
-#     app_database.clean_rsge_voting.to_csv("clean_rsge_voting.csv", index=False)
-#     app_database.clean_oth_voting.to_csv("clean_oth_voting.csv", index=False)
-#     app_database.clean_votes.to_csv("clean_votes.csv", index=False)
-#     app_database.clean_persons.to_csv("clean_persons.csv", index=False)
+# if __name__ == "__main__":
+#     run_all_tests()
