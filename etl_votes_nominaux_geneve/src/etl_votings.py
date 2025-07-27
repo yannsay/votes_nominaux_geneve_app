@@ -41,33 +41,36 @@ def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.
         clean_voting = clean_voting.drop(columns="type_vote")
 
         # Add the numero_debate
-        clean_voting['debat_numero'] = clean_voting["voting_title_fr"].apply(get_debate_number)
+        clean_voting['debat_numero'] = clean_voting["voting_title_fr"].apply(extract_debate_number)
 
         # Clean dates for filter in streamlit
         clean_voting["voting_date"] = pd.to_datetime(
             clean_voting["voting_date"])
 
-        # Filter text without a Référence from RSGE
-        oth_voting = clean_voting.loc[pd.isna(
-            clean_voting['reference']),].reset_index()
-
         # Filter text with a Référence from RSGE
-        clean_voting = clean_voting.loc[~pd.isna(
+        clean_rsge_voting = clean_voting.loc[~pd.isna(
             clean_voting['reference']),].reset_index()
 
         # Remove columns that are empty or not used
         column_missing: str = []
-        for column in clean_voting.columns:
-            if all(pd.isna(clean_voting[column])):
+        for column in clean_rsge_voting.columns:
+            if all(pd.isna(clean_rsge_voting[column])):
                 column_missing.append(column)
-        clean_voting = clean_voting.drop(
+        clean_rsge_voting = clean_rsge_voting.drop(
             columns=column_missing + ["index", "voting_body_key", "voting_updated_local", "voting_created_local"])
 
         # Add RSGE information to voting
-        clean_rsge = rsge_data
-        clean_voting = clean_voting.merge(
-            clean_rsge, on="reference", how="left")
+        clean_rsge_voting = clean_rsge_voting.merge(
+            rsge_data, on="reference", how="left")
 
+        # Adding initial_affair column
+        clean_rsge_voting["initial_affair"] = clean_rsge_voting.apply(extract_initial_affair, axis = 1)
+
+
+        # Filter text without a Référence from RSGE
+        oth_voting = clean_voting.loc[pd.isna(
+            clean_voting['reference']),].reset_index()
+        
         # Removing missing titles with oth_voting
         clean_oth_voting = oth_voting.loc[~pd.isna(
             oth_voting['voting_affair_title_fr']),].reset_index()
@@ -81,12 +84,12 @@ def create_clean_votings_data(votings_file: str, rsge_data: pd.DataFrame) -> pd.
             columns=column_missing + ["level_0", "index", "voting_body_key", "voting_updated_local", "voting_created_local"])
 
 
-        return {"clean_rsge_voting":clean_voting,
+        return {"clean_rsge_voting":clean_rsge_voting,
                 "clean_oth_voting":clean_oth_voting}
 
 
 
-def get_debate_number(title):
+def extract_debate_number(title):
     """
     Extract debate number from titles.
     """
@@ -111,6 +114,14 @@ def get_debate_number(title):
             return 3
     
     return 999
+
+def extract_initial_affair(row):
+    stripped_value = row["voting_affair_title_fr"].replace("("+row["acronym"]+")", "").replace("("+row["reference"]+")", "")
+    project_name = re.search(r'\(([^)]+)\)',stripped_value)
+    if project_name:
+        return project_name.group(1)
+    else:
+        return None
 
 # def test_get_debate_number():
 #     """

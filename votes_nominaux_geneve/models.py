@@ -38,6 +38,7 @@ class RSGEVotingsData(models.Model):
     intitule_chapitre = models.CharField() 
     acronym = models.CharField() 
     debat_numero = models.SmallIntegerField()
+    initial_affair = models.CharField()
 
     class Meta:
         managed=False
