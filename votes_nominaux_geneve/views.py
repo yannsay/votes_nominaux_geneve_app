@@ -8,7 +8,7 @@ from great_tables import GT
 def index(request):
     return render(request, "index.html")
 
-def selection_rgse(request):
+def selection_rsge(request):
     rsge_query = RSGETaxonomieData.objects.all()
     rsge_data = read_frame(rsge_query)
     rsge_shorter =rsge_data[["intitule_rubrique","intitule_chapitre"]].drop_duplicates()
@@ -16,7 +16,7 @@ def selection_rgse(request):
     for rubrique in rsge_shorter["intitule_rubrique"].unique():
         rsge_dict[rubrique] = rsge_shorter[rsge_shorter["intitule_rubrique"] == rubrique]["intitule_chapitre"].tolist()
 
-    return render(request, "selection-rgse.html", {'rsge_dict':rsge_dict})
+    return render(request, "selection-rsge.html", {'rsge_dict':rsge_dict})
 
 def create_votes_table(request):
 
