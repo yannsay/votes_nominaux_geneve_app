@@ -54,18 +54,22 @@ def filter_votes(votes_table: pd.DataFrame,
 
 
 def create_table_to_plot(voting_table: pd.DataFrame,
-                         votes_table: pd.DataFrame,
-                         column_for_title: str = "voting_title_fr"  # "voting_external_id"
+                         votes_table: pd.DataFrame#,
+                        #  column_for_title: str = "voting_title_fr"  # "voting_external_id"
                          ) -> pd.DataFrame:
     """
     Function to merge and pivot voting and vote tables.
     """
+    def add_title(row):
+        new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
+        return new_name
+    voting_table["title_column"] = voting_table.apply(add_title, axis = 1)
     full_table = voting_table.merge(votes_table,
                                     left_on="voting_external_id",
                                     right_on="vote_voting_external_id")
-    short_test = full_table.sort_values(by="voting_date").loc[:, [
-        column_for_title, "vote_person_fullname", "vote_label"]]
-    table_to_plot = short_test.pivot(columns=column_for_title,
+    short_table = full_table.sort_values(by="voting_date").loc[:, [
+        "title_column", "vote_person_fullname", "vote_label"]]
+    table_to_plot = short_table.pivot(columns=["title_column"],
                                      index="vote_person_fullname",
                                      values="vote_label")
     table_to_plot = table_to_plot.reset_index()
