@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Table des votes{% endblock %}
+
+{% block content %}
+    <h1>Votes</h1>
+
+    <table>
+        {{gt_tbl_html | safe }}
+    </table>
+{% endblock %}

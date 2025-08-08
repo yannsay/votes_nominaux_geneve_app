@@ -7,7 +7,8 @@ from great_tables import GT
 
 def index(request):
     return render(request, "index.html")
-
+def about(request):
+    return render(request, "about.html")
 def selection_rsge(request):
     rsge_query = RSGETaxonomieData.objects.all()
     rsge_data = read_frame(rsge_query)
@@ -57,7 +58,7 @@ def create_votes_table(request):
     table_to_plot = create_table_to_plot(voting_table=votings_table, persons_votes_table=persons_votes_table)
 
     #print
-    gt_tbl = GT(table_to_plot)
+    gt_tbl = GT(table_to_plot).with_id("votes_table")
     gt_tbl_html = gt_tbl.as_raw_html()
     return render(request, "table-votes.html", {"gt_tbl_html":gt_tbl_html})
     

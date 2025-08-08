@@ -1,2 +1,5 @@
 non unique name 
 http://127.0.0.1:8000/table-votes?param1=Transports%20et%20communications&param2=Circulation
+
+cannot render table
+http://127.0.0.1:8000/table-votes?param1=Structure%20cantonale%20et%20principes%20fondamentaux&param2=D%C3%A9nomination,%20armoiries%20et%20couleurs%20de%20l%E2%80%99Etat
