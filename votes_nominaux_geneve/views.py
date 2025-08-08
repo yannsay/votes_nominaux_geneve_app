@@ -1,14 +1,14 @@
 from django.shortcuts import render
 from .models import RSGETaxonomieData, RSGEVotingsData, personsData, votesData
 from django_pandas.io import read_frame
-from .src.services import filter_rsge_voting, filter_votes, create_table_to_plot
+from .src.services import filter_rsge_voting, filter_persons, create_persons_votes, create_table_to_plot
 from great_tables import GT
 # Create your views here.
 
 def index(request):
     return render(request, "index.html")
 
-def selection_rgse(request):
+def selection_rsge(request):
     rsge_query = RSGETaxonomieData.objects.all()
     rsge_data = read_frame(rsge_query)
     rsge_shorter =rsge_data[["intitule_rubrique","intitule_chapitre"]].drop_duplicates()
@@ -16,7 +16,7 @@ def selection_rgse(request):
     for rubrique in rsge_shorter["intitule_rubrique"].unique():
         rsge_dict[rubrique] = rsge_shorter[rsge_shorter["intitule_rubrique"] == rubrique]["intitule_chapitre"].tolist()
 
-    return render(request, "selection-rgse.html", {'rsge_dict':rsge_dict})
+    return render(request, "selection-rsge.html", {'rsge_dict':rsge_dict})
 
 def create_votes_table(request):
 
@@ -42,20 +42,19 @@ def create_votes_table(request):
 
     print(votings_table.shape)
 
-    # filter votes
+    # filter persons
+    persons_query = personsData.objects.all()
+    persons_data = read_frame(persons_query)
+    persons_table = filter_persons(persons_data, [],[],[])
+
+    # create persons_votes table
     votes_query = votesData.objects.all()
     votes_data = read_frame(votes_query)
 
-    persons_query = personsData.objects.all()
-    persons_data = read_frame(persons_query)
+    persons_votes_table = create_persons_votes(votes_data, persons_table)
 
-    votes_table = filter_votes(votes_table=votes_data, 
-                               persons_table=persons_data,
-                               selected_persons=[],
-                               selected_parties=[],
-                               selected_genre=[])
-    
-    table_to_plot = create_table_to_plot(voting_table=votings_table, votes_table=votes_table)
+    # Creat table to plot   
+    table_to_plot = create_table_to_plot(voting_table=votings_table, persons_votes_table=persons_votes_table)
 
     #print
     gt_tbl = GT(table_to_plot)
