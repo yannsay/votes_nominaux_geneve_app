@@ -1,42 +1,35 @@
 {% extends 'base.html' %}
-
 {% block title %}Selection{% endblock %}
-
 {% block content %}
 <!-- Main content -->
-    <div class="border mt-2 p-6">
-        <!--  Block for all rubriques -->
-        <div class="border rounded mt-2 p-4 bg-blue-600 text-left">
-            {% for rubrique, chapters in rsge_dict.items %}
-            <!-- Block for a single rubriques (including all chapters) -->
-            <div class="border rounded mt-2 p-4 bg-pink-600 group">
-                <!-- Block for rubrique title-->
-                <div class="border rounded mt-2 p-4 bg-yellow-200">
-                    <a href="table-votes?param1={{rubrique}}">
-                        <h2 class="text-3xl text-white"> {{rubrique}}</h2>
-                    </a>
-                </div>
-                <!-- end Block for rubrique title-->
-
-                <!-- Block for all chapters -->
-                <div>
-                    {% for chapter in chapters %}
-
-                    <!-- Block for signle chapter-->
-                    <a href="table-votes?param1={{rubrique}}&param2={{chapter}}">
-                        <div class="border rounded mt-2 p-4 bg-red-600 hidden group-hover:block hover:bg-blue-600">
-                            {{chapter}}
-                        </div>
-                    </a>
-                    <!-- end Block for single chapter-->
-                    {% endfor %}
-                </div>
-                <!-- end Block for all chapters -->
-
-
-
+<div class="selection-container">
+    <!-- Block for all rubriques -->
+    <div class="rubriques-container">
+        {% for rubrique, chapters in rsge_dict.items %}
+        <!-- Block for a single rubrique (including all chapters) -->
+        <div class="rubrique-container">
+            <!-- Rubrique header -->
+            <div class="rubrique-header">
+                <a href="table-votes?param1={{ rubrique }}" class="rubrique-link">
+                    <h2>{{ rubrique }}</h2>
+                </a>
             </div>
-            <!-- end Block for a single rubrique (including all chapters) -->
-            {% endfor %}
+
+            <!-- Block for all chapters -->
+            <div class="chapters-container">
+                {% for chapter in chapters %}
+                <!-- Block for single chapter -->
+                <a href="table-votes?param1={{ rubrique }}&param2={{ chapter }}" class="chapter-link">
+                    <div class="chapter-block">
+                        {{ chapter }}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
+    <br>
+    <br>
+</div>
 {% endblock %}
