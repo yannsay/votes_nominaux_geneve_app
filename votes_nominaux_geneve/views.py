@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from .models import RSGETaxonomieData, RSGEVotingsData, personsData, votesData
 from django_pandas.io import read_frame
+from django.http import HttpResponse
+from .models import RSGETaxonomieData, RSGEVotingsData, personsData, votesData
 from .src.services import filter_rsge_voting, filter_persons, create_persons_votes, create_table_to_plot
 # Create your views here.
 import numpy as np
@@ -56,5 +57,40 @@ def create_votes_table(request):
     table_to_plot = table_to_plot.replace(np.nan, "")
     # Print the table
     table_as_dict = table_to_plot.to_dict(orient="tight",index = False)
-    return render(request, "table-votes.html", {"table_as_dict":table_as_dict})
+    return render(request, "table-votes.html", {"table_as_dict":table_as_dict,
+                                                "rubrique":param1,
+                                                "chapitres":param2})
     
+def download_votes_csv(request):
+    param1 = request.GET.get('param1')
+    param2 = request.GET.getlist('param2')  # Get multiple values for param2
+
+    rsge_votings_query = RSGEVotingsData.objects.all()
+    rsge_votings_data = read_frame(rsge_votings_query)
+
+    votings_table = filter_rsge_voting(
+        voting_table=rsge_votings_data,
+        selected_rubriques=[param1],
+        selected_chapitre=param2
+    )
+
+    persons_query = personsData.objects.all()
+    persons_data = read_frame(persons_query)
+    persons_table = filter_persons(persons_data, [], [], [])
+
+    votes_query = votesData.objects.all()
+    votes_data = read_frame(votes_query)
+    persons_votes_table = create_persons_votes(votes_data, persons_table)
+
+    table_to_plot = create_table_to_plot(
+        voting_table=votings_table,
+        persons_votes_table=persons_votes_table
+    )
+    table_to_plot = table_to_plot.replace(np.nan, "")
+
+    # Create response as CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="votes_table.csv"'
+    table_to_plot.to_csv(path_or_buf=response, index=False)
+
+    return response
