@@ -2,8 +2,8 @@ from django.shortcuts import render
 from .models import RSGETaxonomieData, RSGEVotingsData, personsData, votesData
 from django_pandas.io import read_frame
 from .src.services import filter_rsge_voting, filter_persons, create_persons_votes, create_table_to_plot
-from great_tables import GT
 # Create your views here.
+import numpy as np
 
 def index(request):
     return render(request, "index.html")
@@ -33,15 +33,12 @@ def create_votes_table(request):
     # if param1 == None:
     #     return render(request, "/")
 
-    print(type(param1))
-    print(param2)
 
     # filter voting
     votings_table = filter_rsge_voting(voting_table=rsge_votings_data, 
                             selected_rubriques=[param1], 
                             selected_chapitre=param2)
 
-    print(votings_table.shape)
 
     # filter persons
     persons_query = personsData.objects.all()
@@ -56,9 +53,8 @@ def create_votes_table(request):
 
     # Creat table to plot   
     table_to_plot = create_table_to_plot(voting_table=votings_table, persons_votes_table=persons_votes_table)
-
-    #print
-    gt_tbl = GT(table_to_plot).with_id("votes_table")
-    gt_tbl_html = gt_tbl.as_raw_html()
-    return render(request, "table-votes.html", {"gt_tbl_html":gt_tbl_html})
+    table_to_plot = table_to_plot.replace(np.nan, "")
+    # Print the table
+    table_as_dict = table_to_plot.to_dict(orient="tight",index = False)
+    return render(request, "table-votes.html", {"table_as_dict":table_as_dict})
     

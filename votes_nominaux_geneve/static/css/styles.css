@@ -166,3 +166,126 @@ a:hover {
     color: white; /* Ensure link text is visible on hover */
 }
 /* end */
+
+/* start table-votes */
+
+/* Style général pour le tableau */
+
+#votes_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 14px;
+    text-align: left;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Style des en-têtes */
+#votes_table th {
+    background-color: #f8f9fa;
+    color: #333;
+    font-weight: bold;
+    padding: 12px 15px;
+    border-bottom: 2px solid #ddd;
+    position: sticky;
+    top: 0;
+}
+
+/* Style des cellules */
+#votes_table td {
+    padding: 10px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Style des lignes du tableau */
+#votes_table tr {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Couleur de fond des lignes alternées pour une meilleure lisibilité */
+#votes_table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Style pour les cellules des votes */
+#votes_table td:nth-child(n+3) {
+    text-align: center;  /* Centre le texte des cellules de vote */
+}
+
+/* Style pour les cellules de parti */
+#votes_table td:nth-child(1) {
+    font-weight: bold;
+    background-color: #e9ecef;
+}
+
+/* Style pour les cellules des députés */
+#votes_table td:nth-child(2) {
+    font-style: italic;
+}
+
+/* Style pour les en-têtes des débats (à partir de la troisième colonne) */
+#votes_table th:nth-child(n+3) {
+    background-color: #e9ecef;
+    text-align: center;
+}
+
+/* Ajout de bordures pour les cellules */
+#votes_table td, #votes_table th {
+    border: 1px solid #ddd;
+}
+
+/* Styles pour les votes */
+#votes_table td.vote-Oui {
+    background-color: #d4edda;  /* Vert clair */
+    color: #155724;
+    font-weight: bold;
+}
+
+#votes_table td.vote-Non {
+    background-color: #f8d7da;  /* Rouge clair */
+    color: #721c24;
+    font-weight: bold;
+}
+
+#votes_table td.vote-Abstention {
+    background-color: #fff3cd;  /* Jaune clair */
+    color: #856404;
+    font-weight: bold;
+}
+
+#votes_table td.vote-nan {
+    background-color: #e2e3e5;  /* Gris clair */
+    color: #383d41;
+    font-style: italic;
+}
+
+/* Styles pour les partis */
+#votes_table td.parti-LC {
+    background-color: #e3f2fd;  /* Bleu clair pour LC */
+}
+
+#votes_table td.parti-LJS {
+    background-color: #e8f5e9;  /* Vert clair pour LJS */
+}
+
+#votes_table td.parti-MCG {
+    background-color: #ffebee;  /* Rose clair pour MCG */
+}
+
+#votes_table td.parti-PLR {
+    background-color: #f3e5f5;  /* Violet clair pour PLR */
+}
+
+#votes_table td.parti-S {
+    background-color: #fff8e1;  /* Jaune clair pour S */
+}
+
+#votes_table td.parti-UDC {
+    background-color: #f5f5f5;  /* Gris clair pour UDC */
+}
+
+#votes_table td.parti-Ve {
+    background-color: #e1f5fe;  /* Cyan clair pour Ve */
+}
+
+/* end */

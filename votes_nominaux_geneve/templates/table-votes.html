@@ -1,9 +1,23 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <h1>Votes</h1>
+<h1>Votes</h1>
 
-    <table>
-        {{gt_tbl_html | safe }}
-    </table>
+<table class="dataframe" id="votes_table">
+    <thead>
+        <tr>
+            {% for column in table_as_dict.columns %}
+            <th>{{ column }}</th>{% endfor %}
+        </tr>
+    </thead>
+    <tbody>{% for row in table_as_dict.data %}
+        <tr>{% for value in row %}
+                {% if forloop.counter == 1 %}<td class="parti-{{ value }}">{{ value }}</td>
+                {% elif forloop.counter == 2 %}<td class="deputee">{{ value }}</td>
+                {% else %}<td class="vote-{{ value }}">{{ value }}</td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
