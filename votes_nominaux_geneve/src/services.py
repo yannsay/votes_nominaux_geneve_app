@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 def filter_rsge_voting(voting_table: pd.DataFrame,
                        selected_rubriques: list[str],
                        selected_chapitre: list[str],
@@ -62,20 +62,13 @@ def create_persons_votes(votes_table: pd.DataFrame,
                                     right_on="vote_person_external_id")
     return full_table
 
-def create_table_to_plot(voting_table: pd.DataFrame,
-                         persons_votes_table: pd.DataFrame
+def create_person_votes_table(voting_table: pd.DataFrame,
+                                persons_votes_table: pd.DataFrame
                         #  column_for_title: str = "voting_title_fr"  # "voting_external_id"
                          ) -> pd.DataFrame:
     """
     Function to merge and pivot voting and vote tables.
     """
-    def add_title(row):
-        """
-        Add a title with the acronym of the law, initial affair if exitis, unique voting affair and debate number.
-        Voting affair helps to keep the name unique.
-        """
-        new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
-        return new_name
     voting_table["title_column"] = voting_table.apply(add_title, axis = 1)
 
     full_table = voting_table.merge(persons_votes_table,
@@ -94,3 +87,34 @@ def create_table_to_plot(voting_table: pd.DataFrame,
 
     return table_to_plot
 
+def create_votes_table(registre: str, 
+                       chapitre: str,
+                       rsge_votings_data: pd.DataFrame,
+                       persons_data: pd.DataFrame,
+                       votes_data: pd.DataFrame) -> pd.DataFrame: 
+
+
+    # filter voting
+    votings_table = filter_rsge_voting(voting_table=rsge_votings_data, 
+                            selected_rubriques=registre, 
+                            selected_chapitre=chapitre)
+    # filter persons
+    persons_table = filter_persons(persons_data, [],[],[])
+
+    # create persons_votes table
+    persons_votes_table = create_persons_votes(votes_data, persons_table)
+
+    # Creat table to plot   
+    table_to_plot = create_person_votes_table(voting_table=votings_table, 
+                                              persons_votes_table=persons_votes_table)
+    table_to_plot = table_to_plot.replace(np.nan, "")
+
+    return table_to_plot
+
+def add_title(row):
+    """
+    Add a title with the acronym of the law, initial affair if exitis, unique voting affair and debate number.
+    Voting affair helps to keep the name unique.
+    """
+    new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
+    return new_name
