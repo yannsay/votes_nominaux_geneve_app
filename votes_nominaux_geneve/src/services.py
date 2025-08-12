@@ -8,13 +8,15 @@ def filter_rsge_voting(voting_table: pd.DataFrame,
     Function to filter the voting table
     """
     filtered_df = voting_table.copy()
-
     if selected_rubriques != []:
-        filtered_df = filtered_df[filtered_df["intitule_rubrique"].isin(
+        filtered_df = filtered_df[filtered_df["rubrique_complet"].isin(
             selected_rubriques)]
+        print("ok")
     if selected_chapitre != []:
-        filtered_df = filtered_df[filtered_df["intitule_chapitre"].isin(
+        filtered_df = filtered_df[filtered_df["chapitre_complet"].isin(
             selected_chapitre)]
+        print("ok")
+
         
     if last_debate:
         max_debates = filtered_df.groupby('voting_affair_number')['debat_numero'].max().reset_index()
@@ -118,3 +120,21 @@ def add_title(row):
     """
     new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
     return new_name
+
+def create_rsge_dict(rsge_data:pd.DataFrame) -> dict[str , str, str, str]:
+    "format the rsge data for view"
+    rsge_shorter =rsge_data[["rubrique_complet", "chapitre_complet", "rubrique_count", "chapitre_count"]].drop_duplicates()
+    rsge_shorter= rsge_shorter.astype({'rubrique_count': 'str', 'chapitre_count':'str'})
+    rsge_shorter= rsge_shorter.replace("nan", "Pas de votes dans les données")
+    rsge_shorter["rubrique_count"] = rsge_shorter["rubrique_count"].str.replace(".0", "")
+    rsge_shorter["chapitre_count"] = rsge_shorter["chapitre_count"].str.replace(".0", "")
+    rsge_dict = {}
+    for rubrique in rsge_shorter["rubrique_complet"].unique():
+        rsge_dict[rubrique]={
+            "count":rsge_shorter[rsge_shorter["rubrique_complet"] == rubrique]["rubrique_count"].values[0],
+            "chapitre":{}
+        }
+        for chapitre in rsge_shorter[rsge_shorter["rubrique_complet"] == rubrique]["chapitre_complet"].to_list():
+            rsge_dict[rubrique]["chapitre"][chapitre] =rsge_shorter[rsge_shorter["chapitre_complet"] == chapitre]["chapitre_count"].values[0]
+    return rsge_dict
+

@@ -5,25 +5,36 @@
 <div class="selection-container">
     <!-- Block for all rubriques -->
     <div class="rubriques-container">
-        {% for rubrique, chapters in rsge_dict.items %}
+        {% for rubrique, infos in rsge_dict.items %}
         <!-- Block for a single rubrique (including all chapters) -->
         <div class="rubrique-container">
             <!-- Rubrique header -->
-            <div class="rubrique-header">
+            {% if infos.count == 'Pas de votes dans les données'%} 
+                <div class="rubrique-header no-data" >
+                    <h2>{{ rubrique }} (Nombre d'affaires: {{ infos.count }})</h2>
+                </div>
+            {% else%}
                 <a href="table-votes?param1={{ rubrique }}" class="rubrique-link">
-                    <h2>{{ rubrique }}</h2>
-                </a>
-            </div>
-
-            <!-- Block for all chapters -->
-            <div class="chapters-container">
-                {% for chapter in chapters %}
-                <!-- Block for single chapter -->
-                <a href="table-votes?param1={{ rubrique }}&param2={{ chapter }}" class="chapter-link">
-                    <div class="chapter-block">
-                        {{ chapter }}
+                    <div class="rubrique-header" >
+                        <h2>{{ rubrique }} (Nombre d'affaires: {{ infos.count }})</h2>
                     </div>
                 </a>
+            {%endif%}
+            <!-- Block for all chapters -->
+            <div class="chapters-container">
+                {% for chapitre, count_chapitre in infos.chapitre.items %}
+                <!-- Block for single chapter -->
+                {% if count_chapitre == 'Pas de votes dans les données'%}
+                    <div class="chapter-block no-data">
+                        {{ chapitre }} (Nombre d'affaires: {{ count_chapitre}})
+                    </div>
+                {% else%}
+                <a href="table-votes?param1={{ rubrique }}&param2={{ chapitre }}" class="chapter-link">
+                    <div class="chapter-block">
+                        {{ chapitre }} (Nombre d'affaires: {{ count_chapitre}})
+                    </div>
+                </a>
+                {%endif%}
                 {% endfor %}
             </div>
         </div>

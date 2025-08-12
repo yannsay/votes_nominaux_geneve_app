@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class RSGETaxonomieData(models.Model):
+class RSGEData(models.Model):
     index = models.AutoField(primary_key=True)
     reference = models.CharField()
     intitule = models.CharField()
@@ -10,10 +10,14 @@ class RSGETaxonomieData(models.Model):
     chapitre = models.CharField()
     intitule_chapitre = models.CharField()
     intitule_rubrique = models.CharField()
+    rubrique_complet = models.CharField()
+    chapitre_complet = models.CharField()
     acronym = models.CharField()
+    rubrique_count = models.IntegerField()
+    chapitre_count = models.IntegerField()
     class Meta:
         managed=False
-        db_table='data_taxonomie_rsge'
+        db_table='data_rsge'
 
 class RSGEVotingsData(models.Model):
     index = models.AutoField(primary_key=True)
@@ -36,6 +40,8 @@ class RSGEVotingsData(models.Model):
     chapitre = models.CharField() 
     intitule_rubrique = models.CharField() 
     intitule_chapitre = models.CharField() 
+    rubrique_complet = models.CharField()
+    chapitre_complet = models.CharField()
     acronym = models.CharField() 
     debat_numero = models.SmallIntegerField()
     initial_affair = models.CharField()

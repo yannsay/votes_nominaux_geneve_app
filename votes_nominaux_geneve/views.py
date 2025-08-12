@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from django_pandas.io import read_frame
 from django.http import HttpResponse
-from io import StringIO
 
-from .models import RSGETaxonomieData, RSGEVotingsData, personsData, votesData
-from .src.services import create_votes_table
+from .models import RSGEData, RSGEVotingsData, personsData, votesData
+from .src.services import create_votes_table, create_rsge_dict
 # Create your views here.
 
 def index(request):
@@ -12,12 +11,9 @@ def index(request):
 def about(request):
     return render(request, "about.html")
 def selection_rsge(request):
-    rsge_query = RSGETaxonomieData.objects.all()
+    rsge_query = RSGEData.objects.all()
     rsge_data = read_frame(rsge_query)
-    rsge_shorter =rsge_data[["intitule_rubrique","intitule_chapitre"]].drop_duplicates()
-    rsge_dict = {}
-    for rubrique in rsge_shorter["intitule_rubrique"].unique():
-        rsge_dict[rubrique] = rsge_shorter[rsge_shorter["intitule_rubrique"] == rubrique]["intitule_chapitre"].tolist()
+    rsge_dict = create_rsge_dict(rsge_data)
 
     return render(request, "selection-rsge.html", {'rsge_dict':rsge_dict})
 

@@ -8,6 +8,10 @@ def extract_last_parentheses(text):
     matches = re.findall(r'\(([^)]+)\)', text)
     return matches[-1] if matches else text
 
+def concate_2cols(row, col1, col2):
+    "return concatenated columns"
+    return str(row[col1]) + " - "+ str(row[col2])
+
 def create_clean_rsge_data(rsge_file: str) -> pd.DataFrame:
     """
     Import the Rubriques Systématique Genève rubriques and chapters and clean them.
@@ -35,6 +39,11 @@ def create_clean_rsge_data(rsge_file: str) -> pd.DataFrame:
     reformatted_rsge["Chapitre"] = reformatted_rsge['Référence'].str[:3]
     reformatted_rsge = reformatted_rsge.merge(
         rubriques_rsge, on="Rubrique", how="left").merge(chapitres_rsge, on="Chapitre", how="left")
+    
+    # create title with code and intitulé
+    reformatted_rsge["rubrique_complet"] = reformatted_rsge.apply(concate_2cols, axis = 1, col1 = "Rubrique", col2 = "Intitulé rubrique")
+    reformatted_rsge["chapitre_complet"] = reformatted_rsge.apply(concate_2cols, axis = 1, col1 = "Chapitre", col2 = "Intitulé chapitre")
+    # look for law acronym
     reformatted_rsge["acronym"] = reformatted_rsge["Intitulé"].apply(extract_last_parentheses)
 
     column_names_dict = {'Référence':'reference',
@@ -53,3 +62,14 @@ def create_clean_rsge_data(rsge_file: str) -> pd.DataFrame:
 
     return reformatted_rsge
 
+def add_counts(rsge_date:pd.DataFrame, voting_data:pd.DataFrame) -> pd.DataFrame:
+    "Adds the count of votings per rubrique and chapter"
+    resume_votings_par_rubrique= voting_data.groupby("rubrique_complet").rubrique_complet.value_counts().reset_index()
+    resume_votings_par_rubrique = resume_votings_par_rubrique.rename(columns={"count":"rubrique_count"})
+    clean_rsge = rsge_date.merge(resume_votings_par_rubrique, "left")
+
+    resume_votings_par_chapitre = voting_data.groupby("chapitre_complet").chapitre_complet.value_counts().reset_index()
+    resume_votings_par_chapitre = resume_votings_par_chapitre.rename(columns={"count":"chapitre_count"})
+    clean_rsge = clean_rsge.merge(resume_votings_par_chapitre, "left")
+
+    return clean_rsge

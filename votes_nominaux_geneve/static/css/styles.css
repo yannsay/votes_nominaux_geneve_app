@@ -70,9 +70,7 @@ footer {
     padding: 1rem;
     width: 100%;
 }
-
 /* Selection Page Specific Styles */
-
 /* Container Styles */
 .selection-container {
     max-width: 1200px;
@@ -100,28 +98,39 @@ footer {
     transform: translateY(-3px);
 }
 
-/* Rubrique Header Styles */
+/* Rubrique Link and Header Styles */
+.rubrique-link {
+    text-decoration: none;
+    color: inherit;
+    display: block; /* Ensures the anchor takes up the space of its content */
+}
+
 .rubrique-header {
     transition: background-color 0.3s ease, color 0.3s ease;
     border-radius: 5px;
     padding: 10px;
+    cursor: pointer;
 }
 
-.rubrique-header:hover {
+.rubrique-link:hover .rubrique-header {
     background-color: #d32f2f; /* Geneva red */
     color: white; /* Ensure text is visible */
     outline: 2px solid #ffd600; /* Geneva yellow accent */
-}
-
-.rubrique-header a {
-    text-decoration: none;
-    color: inherit;
 }
 
 .rubrique-link h2 {
     font-size: 1.5em;
     border-bottom: 2px solid #d32f2f;
     padding-bottom: 10px;
+    margin: 0; /* Ensures consistent spacing */
+}
+
+/* No-data Class Styles */
+.no-data {
+    color: #aaa;
+    background-color: #f0f0f0;
+    pointer-events: none;
+    cursor: default;
 }
 
 /* Chapters Container Styles */
@@ -150,12 +159,18 @@ footer {
     outline: 2px solid #ffd600; /* Geneva yellow accent */
 }
 
+.chapter-block.no-data {
+    color: #aaa;
+    background-color: #f0f0f0;
+    pointer-events: none;
+    cursor: default;
+}
+
 /* Responsive Design Adjustments */
 @media (max-width: 768px) {
     .rubrique-container {
         padding: 10px;
     }
-
     .rubrique-link h2 {
         font-size: 1.2em;
     }
@@ -163,9 +178,9 @@ footer {
 
 /* Additional Styles for Clickable Elements */
 a:hover {
-    color: white; /* Ensure link text is visible on hover */
+    color: white;
 }
-/* end */
+
 
 /* start table-votes */
 
