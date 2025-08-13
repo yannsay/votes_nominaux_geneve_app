@@ -20,9 +20,9 @@ def selection_rsge(request):
 def plot_votes_table(request):
     # Retrieve parameters from the request
     if request.method == "GET":
-        param1 = request.GET.get('param1')
-        param2 = request.GET.get('param2')
-        param2 = [] if param2 is None else [param2]
+        registre = request.GET.get('registre')
+        chapitre = request.GET.get('chapitre')
+        chapitre = [] if chapitre is None else [chapitre]
     
     # Get votings
     rsge_votings_query = RSGEVotingsData.objects.all()
@@ -36,8 +36,8 @@ def plot_votes_table(request):
     votes_data = read_frame(votes_query)
 
     # Create table to plot
-    table_to_plot = create_votes_table(registre=[param1], 
-                                       chapitre=param2,
+    table_to_plot = create_votes_table(registre=[registre], 
+                                       chapitre=chapitre,
                                        rsge_votings_data=rsge_votings_data,
                                        persons_data=persons_data,
                                        votes_data=votes_data)
@@ -56,6 +56,6 @@ def plot_votes_table(request):
     table_as_dict = table_to_plot.to_dict(orient="tight",index = False)
 
     return render(request, "table-votes.html", {"table_as_dict":table_as_dict,
-                                                "rubrique":param1,
-                                                "chapitres":param2,
+                                                "rubrique":registre,
+                                                "chapitres":chapitre,
                                                 "parti_votes_table_as_dict":parti_votes_table_as_dict})

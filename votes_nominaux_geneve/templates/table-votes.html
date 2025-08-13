@@ -4,7 +4,7 @@
     <h1>Votes</h1>
     <h2>Rubrique: {{ rubrique }}</h2>
     {% for chapitre in chapitres %}<h3>Chapitre: {{ chapitre }}</h3>{% endfor %}
-    <a href="?param1={{ rubrique }}{% if chapitres %}&param2={{ chapitres|join:',' }}{% endif %}&download=true" class="button">Download Table as CSV</a>
+    <a href="?registre={{ rubrique }}{% if chapitres %}&chapitre={{ chapitres|join:',' }}{% endif %}&download=true" class="button">Download Table as CSV</a>
 
 </div>
 <input type="checkbox" id="parti-toggle" class="toggle-input" />

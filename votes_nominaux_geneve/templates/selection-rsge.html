@@ -14,7 +14,7 @@
                     <h2>{{ rubrique }} (Nombre d'affaires: {{ infos.count }})</h2>
                 </div>
             {% else%}
-                <a href="table-votes?param1={{ rubrique }}" class="rubrique-link">
+                <a href="table-votes?registre={{ rubrique }}" class="rubrique-link">
                     <div class="rubrique-header" >
                         <h2>{{ rubrique }} (Nombre d'affaires: {{ infos.count }})</h2>
                     </div>
@@ -29,7 +29,7 @@
                         {{ chapitre }} (Nombre d'affaires: {{ count_chapitre}})
                     </div>
                 {% else%}
-                <a href="table-votes?param1={{ rubrique }}&param2={{ chapitre }}" class="chapter-link">
+                <a href="table-votes?registre={{ rubrique }}&chapitre={{ chapitre }}" class="chapter-link">
                     <div class="chapter-block">
                         {{ chapitre }} (Nombre d'affaires: {{ count_chapitre}})
                     </div>
