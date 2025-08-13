@@ -1,43 +1,43 @@
 {% extends 'base.html' %}
-
 {% block content %}
 <h1>Votes nominaux du Grand Conseil de Genève</h1>
+
 <div>
+    <h2>À propos de l'application</h2>
     <p>
-        Cette application a pour but de filtrer les votes personnels des députés du Grand Conseil de Genève. Elle permet
-        de filtrer les projets de lois par les rubriques et chapitres du Registre Systématique de Genève (RSge)
+        Cette application permet d'explorer les <strong>votes personnels des députés du Grand Conseil de Genève</strong>, en filtrant les projets de loi par rubriques et chapitres du <a href="https://silgeneve.ch/legis/" target="_blank" rel="noopener noreferrer">Registre Systématique de Genève (RSge)</a>.
     </p>
     <p>
-        La base de données a été récupérée avec le project Open Parl Data. L'application couvre les votes de la
-        législature actuelle (2023-2028), du 11 mai 2023 au 15 février 2025 (date du téléchargement des des données).82
-        votes affaires avec lesquelles le code RSGE a pu être identifié.
+        Elle s'appuie sur les données ouvertes du projet <a href="https://gitlab.com/opendata.ch/openparldatach" target="_blank" rel="noopener noreferrer">OpenParlData</a> et couvre la législature actuelle (2023-2028), du <strong>11 mai 2023 au 15 février 2025</strong> (dernière mise à jour des données).
     </p>
     <p>
-        Source:
+        <strong>82 votes</strong> ont pu être identifiés avec un code RSge.
     </p>
+</div>
+
+<div>
+    <h2>Méthodologie et limitations</h2>
     <ul>
-        <li>
-            <a href="https://gitlab.com/opendata.ch/openparldatach">OpenParlData</a>
-        </li>
-        <li>
-            <a href="https://silgeneve.ch/legis/">SILGENEVE PUBLIC</a>
-        </li>
+        <li><strong>Dernier débat uniquement :</strong> Seuls les résultats du dernier débat sont affichés.</li>
+        <li><strong>Qualité des données :</strong> Les données proviennent de documents PDF et de liens web, ce qui peut entraîner des erreurs. Signalez-les-moi pour correction.</li>
     </ul>
 </div>
 
 <div>
-    <h1> Méthodes et limitations</h1>
-    <h2> Dernier débat</h2>
-    <p>
-        Uniquement le dernier débat est présenté.
-    </p>
-    <h2> Qualité des données</h2>
-    <p> Comme les données ont été scrapés à partir de liens du Grand Conseil et des documents PDFs, il y a des chances ques les données comportent des erreurs. Veuillez me les signaler pour que je puisse mettre à jour.</p>
-</div>
-<div>
-<h1>A propos de moi</h1>
-    <a href="https://www.linkedin.com/in/yannsay/">Ma page LinkedIn</a>
-    
+    <h2>Sources et crédits</h2>
+    <ul>
+        <li><a href="https://gitlab.com/opendata.ch/openparldatach" target="_blank" rel="noopener noreferrer">OpenParlData</a> (données brutes)</li>
+        <li><a href="https://silgeneve.ch/legis/" target="_blank" rel="noopener noreferrer">SILGENEVE PUBLIC</a> (référentiel RSge)</li>
+    </ul>
 </div>
 
+<div>
+    <h2>À propos du projet</h2>
+    <p>
+        Développé par <a href="https://www.linkedin.com/in/yannsay/" target="_blank" rel="noopener noreferrer">Yann Say</a>.
+    </p>
+    <p>
+        Pour toute question ou signalement d'erreur, contactez-moi via LinkedIn.
+    </p>
+</div>
 {% endblock %}

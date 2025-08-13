@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: votes-nominaux-geneve
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: votes-nominaux-geneve
+  template:
+    metadata:
+      labels:
+        app: votes-nominaux-geneve
+    spec:
+      containers:
+      - name: votes-nominaux-geneve
+        image: votes_nominaux_geneve:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DJANGO_ALLOWED_HOSTS
+          value: "192.168.49.2,localhost,127.0.0.1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: votes-nominaux-geneve-service
+spec:
+  selector:
+    app: votes-nominaux-geneve
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: LoadBalancer
