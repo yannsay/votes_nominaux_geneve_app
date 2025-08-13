@@ -11,11 +11,9 @@ def filter_rsge_voting(voting_table: pd.DataFrame,
     if selected_rubriques != []:
         filtered_df = filtered_df[filtered_df["rubrique_complet"].isin(
             selected_rubriques)]
-        print("ok")
     if selected_chapitre != []:
         filtered_df = filtered_df[filtered_df["chapitre_complet"].isin(
             selected_chapitre)]
-        print("ok")
 
         
     if last_debate:
@@ -71,7 +69,7 @@ def create_person_votes_table(voting_table: pd.DataFrame,
     """
     Function to merge and pivot voting and vote tables.
     """
-    voting_table["title_column"] = voting_table.apply(add_title, axis = 1)
+    voting_table = create_unique_title_column(voting_table)
 
     full_table = voting_table.merge(persons_votes_table,
                                     left_on="voting_external_id",
@@ -113,14 +111,6 @@ def create_votes_table(registre: str,
 
     return table_to_plot
 
-def add_title(row):
-    """
-    Add a title with the acronym of the law, initial affair if exitis, unique voting affair and debate number.
-    Voting affair helps to keep the name unique.
-    """
-    new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
-    return new_name
-
 def create_rsge_dict(rsge_data:pd.DataFrame) -> dict[str , str, str, str]:
     "format the rsge data for view"
     rsge_shorter =rsge_data[["rubrique_complet", "chapitre_complet", "rubrique_count", "chapitre_count"]].drop_duplicates()
@@ -138,3 +128,32 @@ def create_rsge_dict(rsge_data:pd.DataFrame) -> dict[str , str, str, str]:
             rsge_dict[rubrique]["chapitre"][chapitre] =rsge_shorter[rsge_shorter["chapitre_complet"] == chapitre]["chapitre_count"].values[0]
     return rsge_dict
 
+def create_unique_title_column(df):
+    """
+    Create a title column with the acronym of the law, initial affair if exists, unique voting affair, and debate number.
+    Update the title column to include indices for any duplicates.
+    """
+    def add_title(row):
+        new_name = row["acronym"] + " -- " + (row["initial_affair"] if row["initial_affair"] else "") + " -- " + row["voting_affair_number"] + " -- débat: " + str(row["debat_numero"])
+        return new_name
+
+    # Apply the function to create the title_column
+    df["title_column"] = df.apply(add_title, axis=1)
+
+    # Identify duplicated values
+    duplicated_values = df["title_column"].loc[df["title_column"].duplicated()].to_list()
+
+    # Function to add index to duplicated titles
+    def add_index_to_duplicates(row):
+        if row["title_column"] in duplicated_values:
+            # Find all rows with the same title and assign an index
+            duplicate_indices = df.index[df["title_column"] == row["title_column"]].tolist()
+            row_index = duplicate_indices.index(row.name)
+            return f"{row['title_column']} -- id: {row_index + 1}"
+        else:
+            return row["title_column"]
+
+    # Apply the function to update the title_column for duplicated values
+    df["title_column"] = df.apply(add_index_to_duplicates, axis=1)
+
+    return df
