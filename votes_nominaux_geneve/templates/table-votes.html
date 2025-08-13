@@ -4,11 +4,11 @@
     <h1>Votes</h1>
     <h2>Rubrique: {{ rubrique }}</h2>
     {% for chapitre in chapitres %}<h3>Chapitre: {{ chapitre }}</h3>{% endfor %}
-    <a href="?registre={{ rubrique }}{% if chapitres %}&chapitre={{ chapitres|join:',' }}{% endif %}&download=true" class="button">Download Table as CSV</a>
+    <a href="?registre={{ rubrique }}{% if chapitres %}&chapitre={{ chapitres|join:',' }}{% endif %}&download=true" class="button">Télécharger les votes des député.e.s en CSV</a>
 
 </div>
 <input type="checkbox" id="parti-toggle" class="toggle-input" />
-<label for="parti-toggle" class="toggle-label">Parti Votes (click to expand/collapse)</label>
+<label for="parti-toggle" class="toggle-label">Votes des partis (Cliquez pour ouvrir/fermer)</label>
 <div class="parti">
     <h2> Votes des partis</h2>
     <table id="votes_table">

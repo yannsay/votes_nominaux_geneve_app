@@ -8,8 +8,7 @@ from .src.services import create_votes_table, create_rsge_dict, create_parti_vot
 
 def index(request):
     return render(request, "index.html")
-def about(request):
-    return render(request, "about.html")
+
 def selection_rsge(request):
     rsge_query = RSGEData.objects.all()
     rsge_data = read_frame(rsge_query)
