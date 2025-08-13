@@ -4,36 +4,72 @@
     <h1>Votes</h1>
     <h2>Rubrique: {{ rubrique }}</h2>
     {% for chapitre in chapitres %}<h3>Chapitre: {{ chapitre }}</h3>{% endfor %}
-    <a href="?param1={{ rubrique }}&param2={{ chapitres|join:',' }}&download=true" class="button">Download Table as CSV</a>
-
+    <a href="?param1={{ rubrique }}&param2={{ chapitre }}&download=true" class="button">Download Table as CSV</a>
 </div>
-<table class="dataframe" id="votes_table">
-    <thead>
-        <tr>
-            {% for column in table_as_dict.columns %}
-            <th>
-                {{ column }}
-                <button class="arrange-btn" data-column="{{ forloop.counter0 }}" data-sort-direction="none">▼</button>
-            </th>
+<input type="checkbox" id="parti-toggle" class="toggle-input" />
+<label for="parti-toggle" class="toggle-label">Parti Votes (click to expand/collapse)</label>
+<div class="parti">
+    <h2> Votes des partis</h2>
+    <table id="votes_table">
+        <thead>
+            <tr>
+                {% for column in parti_votes_table_as_dict.columns %}
+                <th>
+                    {{ column }}
+                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}" data-sort-direction="none">▼</button>
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in parti_votes_table_as_dict.data %}
+            <tr>
+                {% for value in row %}
+                    {% if forloop.counter == 1 %}
+                        <td class="parti-{{ value }}">{{ value }}</td>
+                    {% elif forloop.counter == 2 %}
+                        <td class="parti-vote-{{ value }}">{{ value }}</td>
+                    {% else %}
+                        <td class="vote-total">{{ value }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in table_as_dict.data %}
-        <tr>
-            {% for value in row %}
-                {% if forloop.counter == 1 %}
-                    <td class="parti-{{ value }}">{{ value }}</td>
-                {% elif forloop.counter == 2 %}
-                    <td class="deputee">{{ value }}</td>
-                {% else %}
-                    <td class="vote-{{ value }}">{{ value }}</td>
-                {% endif %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <h2> Votes des député.e.s</h2>
+
+    <table id="votes_table">
+        <thead>
+            <tr>
+                {% for column in table_as_dict.columns %}
+                <th>
+                    {{ column }}
+                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}" data-sort-direction="none">▼</button>
+                </th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in table_as_dict.data %}
+            <tr>
+                {% for value in row %}
+                    {% if forloop.counter == 1 %}
+                        <td class="parti-{{ value }}">{{ value }}</td>
+                    {% elif forloop.counter == 2 %}
+                        <td class="deputee">{{ value }}</td>
+                    {% else %}
+                        <td class="vote-{{ value }}">{{ value }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

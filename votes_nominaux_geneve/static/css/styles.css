@@ -303,4 +303,25 @@ a:hover {
     background-color: #e1f5fe;  /* Cyan clair pour Ve */
 }
 
+/* Hide the checkbox */
+.toggle-input {
+    display: none;
+}
+/* Style the label as a clickable header */
+.toggle-label {
+    display: block;
+    background: #f0f0f0;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+/* Hide the content by default */
+.toggle-input:not(:checked) ~ .parti {
+    display: none;
+}
+/* Show the content when checkbox is checked */
+.toggle-input:checked ~ .parti {
+    display: block;
+}
 /* end */

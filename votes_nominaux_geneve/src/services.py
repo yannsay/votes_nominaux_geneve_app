@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from itertools import product
+
 def filter_rsge_voting(voting_table: pd.DataFrame,
                        selected_rubriques: list[str],
                        selected_chapitre: list[str],
@@ -157,3 +159,17 @@ def create_unique_title_column(df):
     df["title_column"] = df.apply(add_index_to_duplicates, axis=1)
 
     return df
+
+def create_parti_votes_table(votes_table:pd.DataFrame) -> pd.DataFrame:
+    """Creates the parti votes table from the votes table"""
+    unique_partis_votes_table = pd.DataFrame(list(product(votes_table["Parti"].drop_duplicates(), ["Oui", "Non", "Abstention"])), columns=['Parti', 'Vote'])
+    voting_columns = votes_table.columns[~votes_table.columns.isin(['Parti', 'Député.e'])].to_list()
+    for column in voting_columns:
+        counts_per_party =votes_table.loc[:,["Parti",column]].groupby(["Parti",column])[column].value_counts().reset_index()
+        mask= counts_per_party[column] != ""
+        filtered_count_per_party = counts_per_party.loc[mask]
+        filtered_count_per_party.columns = ["Parti", "Vote", column]
+        unique_partis_votes_table = unique_partis_votes_table.merge(filtered_count_per_party, how="left",on=["Parti", "Vote"])
+        unique_partis_votes_table[column] = unique_partis_votes_table[column].fillna(0).astype(int)
+
+    return unique_partis_votes_table

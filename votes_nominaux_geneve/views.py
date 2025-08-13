@@ -3,7 +3,7 @@ from django_pandas.io import read_frame
 from django.http import HttpResponse
 
 from .models import RSGEData, RSGEVotingsData, personsData, votesData
-from .src.services import create_votes_table, create_rsge_dict
+from .src.services import create_votes_table, create_rsge_dict, create_parti_votes_table
 # Create your views here.
 
 def index(request):
@@ -41,15 +41,21 @@ def plot_votes_table(request):
                                        rsge_votings_data=rsge_votings_data,
                                        persons_data=persons_data,
                                        votes_data=votes_data)
+    
+    parti_votes_table = create_parti_votes_table(table_to_plot)
+
     if request.GET.get('download'):
         # Create a response with the CSV file
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="votes_table.csv"'
         table_to_plot.to_csv(path_or_buf=response, index=False)
         return response
+
     
-    # Print the table
+    parti_votes_table_as_dict = parti_votes_table.to_dict(orient="tight",index = False)
     table_as_dict = table_to_plot.to_dict(orient="tight",index = False)
+
     return render(request, "table-votes.html", {"table_as_dict":table_as_dict,
                                                 "rubrique":param1,
-                                                "chapitres":param2})
+                                                "chapitres":param2,
+                                                "parti_votes_table_as_dict":parti_votes_table_as_dict})
