@@ -13,8 +13,8 @@ class RSGEData(models.Model):
     rubrique_complet = models.CharField()
     chapitre_complet = models.CharField()
     acronym = models.CharField()
-    rubrique_count = models.IntegerField()
-    chapitre_count = models.IntegerField()
+    rubrique_affair_count = models.IntegerField()
+    chapitre_affair_count = models.IntegerField()
     class Meta:
         managed=False
         db_table='data_rsge'

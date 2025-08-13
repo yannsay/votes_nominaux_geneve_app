@@ -62,14 +62,14 @@ def create_clean_rsge_data(rsge_file: str) -> pd.DataFrame:
 
     return reformatted_rsge
 
-def add_counts(rsge_date:pd.DataFrame, voting_data:pd.DataFrame) -> pd.DataFrame:
+def add_affairs_counts(rsge_date:pd.DataFrame, voting_data:pd.DataFrame) -> pd.DataFrame:
     "Adds the count of votings per rubrique and chapter"
-    resume_votings_par_rubrique= voting_data.groupby("rubrique_complet").rubrique_complet.value_counts().reset_index()
-    resume_votings_par_rubrique = resume_votings_par_rubrique.rename(columns={"count":"rubrique_count"})
+    resume_votings_par_rubrique= voting_data.groupby(["voting_affair_number","rubrique_complet"]).size().groupby("rubrique_complet").size().reset_index()
+    resume_votings_par_rubrique.columns = ["rubrique_complet", "rubrique_affair_count"]
     clean_rsge = rsge_date.merge(resume_votings_par_rubrique, "left")
 
-    resume_votings_par_chapitre = voting_data.groupby("chapitre_complet").chapitre_complet.value_counts().reset_index()
-    resume_votings_par_chapitre = resume_votings_par_chapitre.rename(columns={"count":"chapitre_count"})
+    resume_votings_par_chapitre = voting_data.groupby(["voting_affair_number","chapitre_complet"]).size().groupby("chapitre_complet").size().reset_index()
+    resume_votings_par_chapitre.columns = ["chapitre_complet", "chapitre_affair_count"]
     clean_rsge = clean_rsge.merge(resume_votings_par_chapitre, "left")
 
     return clean_rsge

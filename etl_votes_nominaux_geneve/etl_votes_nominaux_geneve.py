@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 
-from src.etl_rsge import create_clean_rsge_data, add_counts
+from src.etl_rsge import create_clean_rsge_data, add_affairs_counts
 from src.etl_votings import create_clean_votings_data
 from src.etl_votes import create_clean_votes_data
 from src.etl_persons import create_clean_persons_data
@@ -32,8 +32,8 @@ print("""
     """)
 print(clean_votings["clean_oth_voting"].columns)
 
-# Adding information on votes to RSGE data
-clean_rsge = add_counts(clean_rsge, clean_votings["clean_rsge_voting"])
+# Adding information on number of affairs to RSGE data
+clean_rsge = add_affairs_counts(clean_rsge, clean_votings["clean_rsge_voting"])
 print(clean_rsge.columns)
 clean_rsge.to_sql("data_rsge", if_exists='replace', con=engine)
 

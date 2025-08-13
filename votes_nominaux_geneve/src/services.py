@@ -113,19 +113,19 @@ def create_votes_table(registre: str,
 
 def create_rsge_dict(rsge_data:pd.DataFrame) -> dict[str , str, str, str]:
     "format the rsge data for view"
-    rsge_shorter =rsge_data[["rubrique_complet", "chapitre_complet", "rubrique_count", "chapitre_count"]].drop_duplicates()
-    rsge_shorter= rsge_shorter.astype({'rubrique_count': 'str', 'chapitre_count':'str'})
+    rsge_shorter =rsge_data[["rubrique_complet", "chapitre_complet", "rubrique_affair_count", "chapitre_affair_count"]].drop_duplicates()
+    rsge_shorter= rsge_shorter.astype({'rubrique_affair_count': 'str', 'chapitre_affair_count':'str'})
     rsge_shorter= rsge_shorter.replace("nan", "Pas de votes dans les données")
-    rsge_shorter["rubrique_count"] = rsge_shorter["rubrique_count"].str.replace(".0", "")
-    rsge_shorter["chapitre_count"] = rsge_shorter["chapitre_count"].str.replace(".0", "")
+    rsge_shorter["rubrique_affair_count"] = rsge_shorter["rubrique_affair_count"].str.replace(".0", "")
+    rsge_shorter["chapitre_affair_count"] = rsge_shorter["chapitre_affair_count"].str.replace(".0", "")
     rsge_dict = {}
     for rubrique in rsge_shorter["rubrique_complet"].unique():
         rsge_dict[rubrique]={
-            "count":rsge_shorter[rsge_shorter["rubrique_complet"] == rubrique]["rubrique_count"].values[0],
+            "count":rsge_shorter[rsge_shorter["rubrique_complet"] == rubrique]["rubrique_affair_count"].values[0],
             "chapitre":{}
         }
         for chapitre in rsge_shorter[rsge_shorter["rubrique_complet"] == rubrique]["chapitre_complet"].to_list():
-            rsge_dict[rubrique]["chapitre"][chapitre] =rsge_shorter[rsge_shorter["chapitre_complet"] == chapitre]["chapitre_count"].values[0]
+            rsge_dict[rubrique]["chapitre"][chapitre] =rsge_shorter[rsge_shorter["chapitre_complet"] == chapitre]["chapitre_affair_count"].values[0]
     return rsge_dict
 
 def create_unique_title_column(df):
