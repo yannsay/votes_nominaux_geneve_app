@@ -15,15 +15,98 @@ body {
     background-color: #f4f4f4;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensures body takes full viewport height */
+    min-height: 100vh;
 }
 
-/* Header Styles */
+/* Typography Harmonization */
+h1 {
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 1.2em;
+    border-bottom: 3px solid #d32f2f;
+    padding-bottom: 0.3em;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 1.6em;
+    color: #333;
+    margin: 1.5em 0 1em 0;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 0.2em;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.3em;
+    color: #333;
+    margin: 1.2em 0 0.8em 0;
+    font-weight: 600;
+}
+
+p {
+    margin-bottom: 1em;
+    line-height: 1.7;
+    color: #444;
+}
+
+ul {
+    margin-bottom: 1em;
+    padding-left: 1.5em;
+}
+
+li {
+    margin-bottom: 0.3em;
+    line-height: 1.6;
+}
+
+/* Links */
+a {
+    color: #0066cc;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #d32f2f;
+    text-decoration: underline;
+}
+
+/* Button Styles */
+.button {
+    display: inline-block;
+    background-color: #d32f2f;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 10px 0;
+    transition: all 0.3s ease;
+    border: 2px solid #d32f2f;
+}
+
+.button:hover {
+    background-color: #a52725;
+    border-color: #a52725;
+    outline: 2px solid #ffd600;
+    color: white;
+    text-decoration: none;
+}
+
+/* Header Styles - Harmonized */
 header {
-    background-color: #fff; /* White background */
-    color: #000; /* Black text color */
-    padding: 1rem;
-    border-bottom: 4px solid #d32f2f; /* Geneva red bottom line */
+    background-color: #fff;
+    color: #000;
+    padding: 1rem 0;
+    border-bottom: 4px solid #d32f2f;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
 }
 
 nav ul {
@@ -31,26 +114,38 @@ nav ul {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 2rem;
 }
 
 nav ul li {
     margin: 0;
 }
 
+/* Navigation links - keep them styled */
 nav ul li a {
-    color: #000; /* Black text for links */
+    color: #333;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.3s ease;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 1.1em;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+/* Selection page links - keep them styled */
+.rubrique-link,
+.chapter-link {
+    text-decoration: none;
+    color: inherit;
 }
 
 nav ul li a:hover {
-    background-color: #d32f2f; /* Geneva red */
-    border-radius: 4px;
-    color: #fff; /* White text on hover for contrast */
-    outline: 2px solid #ffd600; /* Geneva yellow accent */
-
+    background-color: #d32f2f;
+    color: #fff;
+    outline: 2px solid #ffd600;
+    text-decoration: none;
 }
 
 /* Main Content Styles */
@@ -58,7 +153,7 @@ main {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
-    flex: 1; /* Allows main to grow and push footer down */
+    flex: 1;
     padding-bottom: 50px;
 }
 
@@ -67,25 +162,24 @@ footer {
     background-color: #333;
     color: #fff;
     text-align: center;
-    padding: 1rem;
+    padding: 1.5rem;
     width: 100%;
+    font-size: 0.9em;
 }
+
 /* Selection Page Specific Styles */
-/* Container Styles */
 .selection-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Rubriques Container Styles */
 .rubriques-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* Rubrique Container Styles */
 .rubrique-container {
     background-color: white;
     border-radius: 8px;
@@ -98,11 +192,10 @@ footer {
     transform: translateY(-3px);
 }
 
-/* Rubrique Link and Header Styles */
 .rubrique-link {
     text-decoration: none;
     color: inherit;
-    display: block; /* Ensures the anchor takes up the space of its content */
+    display: block;
 }
 
 .rubrique-header {
@@ -113,19 +206,18 @@ footer {
 }
 
 .rubrique-link:hover .rubrique-header {
-    background-color: #d32f2f; /* Geneva red */
-    color: white; /* Ensure text is visible */
-    outline: 2px solid #ffd600; /* Geneva yellow accent */
+    background-color: #d32f2f;
+    color: white;
+    outline: 2px solid #ffd600;
 }
 
 .rubrique-link h2 {
     font-size: 1.5em;
     border-bottom: 2px solid #d32f2f;
     padding-bottom: 10px;
-    margin: 0; /* Ensures consistent spacing */
+    margin: 0;
 }
 
-/* No-data Class Styles */
 .no-data {
     color: #aaa;
     background-color: #f0f0f0;
@@ -133,14 +225,12 @@ footer {
     cursor: default;
 }
 
-/* Chapters Container Styles */
 .chapters-container {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* Chapter Block Styles */
 .chapter-link {
     text-decoration: none;
     color: inherit;
@@ -154,9 +244,9 @@ footer {
 }
 
 .chapter-block:hover {
-    background-color: #d32f2f; /* Geneva red */
-    color: white; /* Ensure text is visible */
-    outline: 2px solid #ffd600; /* Geneva yellow accent */
+    background-color: #d32f2f;
+    color: white;
+    outline: 2px solid #ffd600;
 }
 
 .chapter-block.no-data {
@@ -166,162 +256,218 @@ footer {
     cursor: default;
 }
 
-/* Responsive Design Adjustments */
-@media (max-width: 768px) {
-    .rubrique-container {
-        padding: 10px;
-    }
-    .rubrique-link h2 {
-        font-size: 1.2em;
-    }
-}
-
-/* Additional Styles for Clickable Elements */
-a:hover {
-    color: white;
-}
-
-
-/* start table-votes */
-
-/* Style général pour le tableau */
-
-#votes_table {
+/* Table Styles - Harmonized and Aligned */
+.votes-table {
     width: 100%;
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 14px;
     text-align: left;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    background-color: white;
 }
 
-/* Style des en-têtes */
-#votes_table th {
+/* Ensure both tables have same column widths */
+.votes-table th:nth-child(1),
+.votes-table td:nth-child(1) {
+    width: 8%;
+    min-width: 60px;
+}
+
+.votes-table th:nth-child(2),
+.votes-table td:nth-child(2) {
+    width: 20%;
+    min-width: 150px;
+}
+
+.votes-table th:nth-child(n+3),
+.votes-table td:nth-child(n+3) {
+    width: auto;
+    min-width: 80px;
+}
+
+.votes-table th {
     background-color: #f8f9fa;
     color: #333;
     font-weight: bold;
-    padding: 12px 15px;
-    border-bottom: 2px solid #ddd;
+    padding: 15px 12px;
+    border-bottom: 2px solid #d32f2f;
     position: sticky;
     top: 0;
+    text-align: center;
 }
 
-/* Style des cellules */
-#votes_table td {
-    padding: 10px 15px;
+.votes-table td {
+    padding: 12px;
     border-bottom: 1px solid #ddd;
+    vertical-align: middle;
 }
 
-/* Style des lignes du tableau */
-#votes_table tr {
+.votes-table tr {
     border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s ease;
 }
 
-/* Couleur de fond des lignes alternées pour une meilleure lisibilité */
-#votes_table tr:nth-child(even) {
-    background-color: #f2f2f2;
+.votes-table td:nth-child(n+3) {
+    text-align: center;
 }
 
-/* Style pour les cellules des votes */
-#votes_table td:nth-child(n+3) {
-    text-align: center;  /* Centre le texte des cellules de vote */
-}
-
-/* Style pour les cellules de parti */
-#votes_table td:nth-child(1) {
+.votes-table td:nth-child(1) {
     font-weight: bold;
     background-color: #e9ecef;
 }
 
-/* Style pour les cellules des députés */
-#votes_table td:nth-child(2) {
+.votes-table td:nth-child(2) {
     font-style: italic;
 }
 
-/* Style pour les en-têtes des débats (à partir de la troisième colonne) */
-#votes_table th:nth-child(n+3) {
+.votes-table th:nth-child(n+3) {
     background-color: #e9ecef;
     text-align: center;
 }
 
-/* Ajout de bordures pour les cellules */
-#votes_table td, #votes_table th {
+.votes-table td,
+.votes-table th {
     border: 1px solid #ddd;
 }
 
-/* Styles pour les votes */
-#votes_table td.vote-Oui {
-    background-color: #d4edda;  /* Vert clair */
+/* Vote color styles */
+.votes-table td.vote-Oui {
+    background-color: #d4edda;
     color: #155724;
     font-weight: bold;
 }
 
-#votes_table td.vote-Non {
-    background-color: #f8d7da;  /* Rouge clair */
+.votes-table td.vote-Non {
+    background-color: #f8d7da;
     color: #721c24;
     font-weight: bold;
 }
 
-#votes_table td.vote-Abstention {
-    background-color: #fff3cd;  /* Jaune clair */
+.votes-table td.vote-Abstention {
+    background-color: #fff3cd;
     color: #856404;
     font-weight: bold;
 }
 
-#votes_table td.vote-nan {
-    background-color: #e2e3e5;  /* Gris clair */
+.votes-table td.vote-nan {
+    background-color: #e2e3e5;
     color: #383d41;
     font-style: italic;
 }
 
-/* Styles pour les partis */
-#votes_table td.parti-LC {
-    background-color: #e3f2fd;  /* Bleu clair pour LC */
+/* Specific to votes parti */
+#votes-table-parti.votes-table tr {
+    background-color: #c2c2d3;
 }
 
-#votes_table td.parti-LJS {
-    background-color: #e8f5e9;  /* Vert clair pour LJS */
+.votes-table td.parti-vote-Oui {
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: bold;
 }
 
-#votes_table td.parti-MCG {
-    background-color: #ffebee;  /* Rose clair pour MCG */
+.votes-table td.parti-vote-Non {
+    background-color: #f8d7da;
+    color: #721c24;
+    font-weight: bold;
 }
 
-#votes_table td.parti-PLR {
-    background-color: #f3e5f5;  /* Violet clair pour PLR */
+.votes-table td.parti-vote-Abstention {
+    background-color: #fff3cd;
+    color: #856404;
+    font-weight: bold;
+}
+.votes-table td.vote-total {
+    font-weight: bold;
 }
 
-#votes_table td.parti-S {
-    background-color: #fff8e1;  /* Jaune clair pour S */
+/* title-votes-container */
+.title-votes-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
 }
 
-#votes_table td.parti-UDC {
-    background-color: #f5f5f5;  /* Gris clair pour UDC */
-}
-
-#votes_table td.parti-Ve {
-    background-color: #e1f5fe;  /* Cyan clair pour Ve */
-}
-
-/* Hide the checkbox */
+/* Toggle section styles */
 .toggle-input {
     display: none;
 }
-/* Style the label as a clickable header */
+
 .toggle-label {
     display: block;
-    background: #f0f0f0;
-    padding: 10px;
+    background: #c2c2d3;
+    color: white;
+    padding: 15px 20px;
     cursor: pointer;
     font-weight: bold;
-    margin-bottom: 5px;
+    font-size: 1.1em;
+    margin: 20px 0 5px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
-/* Hide the content by default */
-.toggle-input:not(:checked) ~ .parti {
+
+.toggle-label:hover {
+    background-color: #5a6268;
+    outline: 2px solid #ffd600;
+}
+
+.toggle-input:not(:checked)~.parti {
     display: none;
 }
-/* Show the content when checkbox is checked */
-.toggle-input:checked ~ .parti {
+
+.toggle-input:checked~.parti {
     display: block;
 }
-/* end */
+
+/* Sort button styles */
+.arrange-btn {
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 0.8em;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+}
+
+.arrange-btn:hover {
+    background-color: rgba(255, 214, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.4em;
+    }
+
+    .rubrique-container {
+        padding: 10px;
+    }
+
+    .votes-table {
+        font-size: 12px;
+    }
+
+    .votes-table th,
+    .votes-table td {
+        padding: 8px 6px;
+    }
+}

@@ -1,23 +1,31 @@
 {% extends 'base.html' %}
 {% block content %}
 <div>
-    <h1>Votes</h1>
-    <h2>Rubrique: {{ rubrique }}</h2>
-    {% for chapitre in chapitres %}<h3>Chapitre: {{ chapitre }}</h3>{% endfor %}
-    <a href="?registre={{ rubrique }}{% if chapitres %}&chapitre={{ chapitres|join:',' }}{% endif %}&download=true" class="button">Télécharger les votes des député.e.s en CSV</a>
+    <div class="title-votes-container">
+        <h1>Votes</h1>
+        <a href="?registre={{ rubrique }}{% if chapitres %}&chapitre={{ chapitres|join:',' }}{% endif %}&download=true"
+            class="button">Télécharger les votes des député.e.s en CSV</a>
 
+    </div>
+    <div>
+        <h2>Rubrique: {{ rubrique }}</h2>
+        {% for chapitre in chapitres %}<h3>Chapitre: {{ chapitre }}</h3>{% endfor %}
+
+    </div>
 </div>
 <input type="checkbox" id="parti-toggle" class="toggle-input" />
 <label for="parti-toggle" class="toggle-label">Votes des partis (Cliquez pour ouvrir/fermer)</label>
+
 <div class="parti">
     <h2> Votes des partis</h2>
-    <table id="votes_table">
+    <table id="votes-table-parti" class="votes-table">
         <thead>
             <tr>
                 {% for column in parti_votes_table_as_dict.columns %}
                 <th>
                     {{ column }}
-                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}" data-sort-direction="none">▼</button>
+                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}"
+                        data-sort-direction="none">▼</button>
                 </th>
                 {% endfor %}
             </tr>
@@ -26,13 +34,13 @@
             {% for row in parti_votes_table_as_dict.data %}
             <tr>
                 {% for value in row %}
-                    {% if forloop.counter == 1 %}
-                        <td class="parti-{{ value }}">{{ value }}</td>
-                    {% elif forloop.counter == 2 %}
-                        <td class="parti-vote-{{ value }}">{{ value }}</td>
-                    {% else %}
-                        <td class="vote-total">{{ value }}</td>
-                    {% endif %}
+                {% if forloop.counter == 1 %}
+                <td class="parti-{{ value }}">{{ value }}</td>
+                {% elif forloop.counter == 2 %}
+                <td class="parti-vote-{{ value }}">{{ value }}</td>
+                {% else %}
+                <td class="vote-total">{{ value }}</td>
+                {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -42,13 +50,14 @@
 <div>
     <h2> Votes des député.e.s</h2>
 
-    <table id="votes_table">
+    <table id="votes-table-depute" class="votes-table">
         <thead>
             <tr>
                 {% for column in table_as_dict.columns %}
                 <th>
                     {{ column }}
-                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}" data-sort-direction="none">▼</button>
+                    <button class="arrange-btn" data-column="{{ forloop.counter0 }}"
+                        data-sort-direction="none">▼</button>
                 </th>
                 {% endfor %}
             </tr>
@@ -57,13 +66,13 @@
             {% for row in table_as_dict.data %}
             <tr>
                 {% for value in row %}
-                    {% if forloop.counter == 1 %}
-                        <td class="parti-{{ value }}">{{ value }}</td>
-                    {% elif forloop.counter == 2 %}
-                        <td class="deputee">{{ value }}</td>
-                    {% else %}
-                        <td class="vote-{{ value }}">{{ value }}</td>
-                    {% endif %}
+                {% if forloop.counter == 1 %}
+                <td class="parti-{{ value }}">{{ value }}</td>
+                {% elif forloop.counter == 2 %}
+                <td class="deputee">{{ value }}</td>
+                {% else %}
+                <td class="vote-{{ value }}">{{ value }}</td>
+                {% endif %}
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -73,57 +82,57 @@
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buttons = document.querySelectorAll('.arrange-btn');
-    buttons.forEach(button => {
-        button.addEventListener('click', function() {
-            const columnIndex = this.getAttribute('data-column');
-            const table = document.getElementById('votes_table');
-            const tbody = table.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr'));
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.arrange-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const columnIndex = this.getAttribute('data-column');
+                const table = document.getElementById('votes-table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
 
-            // Determine the new sorting direction
-            const currentDir = this.getAttribute('data-sort-direction');
-            let newDir;
-            if (currentDir === 'none' || currentDir === 'desc') {
-                newDir = 'asc';
-                this.textContent = '▲';
-            } else {
-                newDir = 'desc';
-                this.textContent = '▼';
-            }
-            this.setAttribute('data-sort-direction', newDir);
-
-            // Define the order for vote values
-            const voteOrder = { 'Oui': 1, 'Non': 2, 'Abstention': 3, '': 4 };
-
-            rows.sort((a, b) => {
-                const aValue = a.cells[columnIndex].textContent;
-                const bValue = b.cells[columnIndex].textContent;
-
-                // Handle empty values by placing them last
-                if (aValue === '' || bValue === '') {
-                    return aValue === '' ? 1 : -1;
+                // Determine the new sorting direction
+                const currentDir = this.getAttribute('data-sort-direction');
+                let newDir;
+                if (currentDir === 'none' || currentDir === 'desc') {
+                    newDir = 'asc';
+                    this.textContent = '▲';
+                } else {
+                    newDir = 'desc';
+                    this.textContent = '▼';
                 }
+                this.setAttribute('data-sort-direction', newDir);
 
-                // Use the defined order for vote values
-                const aOrder = voteOrder[aValue];
-                const bOrder = voteOrder[bValue];
+                // Define the order for vote values
+                const voteOrder = { 'Oui': 1, 'Non': 2, 'Abstention': 3, '': 4 };
 
-                if (aOrder !== undefined && bOrder !== undefined) {
-                    return newDir === 'asc' ? aOrder - bOrder : bOrder - aOrder;
-                }
+                rows.sort((a, b) => {
+                    const aValue = a.cells[columnIndex].textContent;
+                    const bValue = b.cells[columnIndex].textContent;
 
-                // Default to string comparison for non-vote columns
-                return newDir === 'asc'
-                    ? aValue.localeCompare(bValue)
-                    : bValue.localeCompare(aValue);
+                    // Handle empty values by placing them last
+                    if (aValue === '' || bValue === '') {
+                        return aValue === '' ? 1 : -1;
+                    }
+
+                    // Use the defined order for vote values
+                    const aOrder = voteOrder[aValue];
+                    const bOrder = voteOrder[bValue];
+
+                    if (aOrder !== undefined && bOrder !== undefined) {
+                        return newDir === 'asc' ? aOrder - bOrder : bOrder - aOrder;
+                    }
+
+                    // Default to string comparison for non-vote columns
+                    return newDir === 'asc'
+                        ? aValue.localeCompare(bValue)
+                        : bValue.localeCompare(aValue);
+                });
+
+                // Clear and re-add rows in sorted order
+                rows.forEach(row => tbody.appendChild(row));
             });
-
-            // Clear and re-add rows in sorted order
-            rows.forEach(row => tbody.appendChild(row));
         });
     });
-});
 </script>
 {% endblock %}
